@@ -1,3 +1,4 @@
+import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { ListSchema } from 'src/app/core';
 import { ApiService } from 'src/app/core/services';
@@ -8,7 +9,15 @@ import { ApiService } from 'src/app/core/services';
   styleUrls: ['./board.component.sass']
 })
 export class BoardComponent implements OnInit {
-  lists!: ListSchema[];
+  lists: ListSchema[];
+  isOverlayDisplayed = false;
+  readonly overlayOptions: Partial<CdkConnectedOverlay> = {
+    hasBackdrop: true,
+    positions: [
+      { originX: 'start', originY: 'top', overlayX: 'start',  overlayY: 'top'}
+    ]
+  };
+
   constructor(private apiService: ApiService) { 
     this.lists = [];
   }
@@ -22,5 +31,13 @@ export class BoardComponent implements OnInit {
       (response: any) => this.lists = response['list'],
       error => console.log('Ups! we have an error: ', error)
     );
+  }
+
+  displayOverlay(): void {
+    this.isOverlayDisplayed = true;
+  }
+  
+  hideOverlay(): void {
+    this.isOverlayDisplayed = false;
   }
 }

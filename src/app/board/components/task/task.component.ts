@@ -7,7 +7,7 @@ import { TaskSchema } from 'src/app/core';
   styleUrls: ['./task.component.sass']
 })
 export class TaskComponent implements OnInit {
-  @Input() task!: TaskSchema;
+  @Input() task: TaskSchema;
 
   constructor() { }
 
