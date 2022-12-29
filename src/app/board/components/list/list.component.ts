@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ListSchema, TaskSchema } from 'src/app/core';
 
 @Component({
@@ -9,7 +9,7 @@ import { ListSchema, TaskSchema } from 'src/app/core';
 })
 export class ListComponent implements OnInit {
   @Input() list: ListSchema | undefined;
-  
+  @Output() editTask: EventEmitter<TaskSchema> = new EventEmitter();
   constructor() { }
 
   ngOnInit(): void {
@@ -24,5 +24,9 @@ export class ListComponent implements OnInit {
                         event.previousIndex,
                         event.currentIndex);
     }
+  }
+
+  handleEdit(task: TaskSchema){
+    this.editTask.emit(task)
   }
 }

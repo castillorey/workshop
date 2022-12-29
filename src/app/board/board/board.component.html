@@ -4,11 +4,11 @@
     Añadir Tarea
   </button>
   <section class="board__list">
-    <app-list *ngFor="let list of lists" [list]="list"></app-list>
+    <app-list *ngFor="let list of lists" [list]="list" (editTask)="displayOverlay($event)"></app-list>
   </section>
   <ng-template #connectedOverlay="cdkConnectedOverlay" cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isOverlayDisplayed" [cdkConnectedOverlayHasBackdrop]="overlayOptions.hasBackdrop"
     [cdkConnectedOverlayPositions]="overlayOptions.positions" (backdropClick)="hideOverlay()" (detach)="hideOverlay()">
-    <app-create-task [connectedOverlay]="connectedOverlay"></app-create-task>
+    <app-create-task [connectedOverlay]="connectedOverlay" [task]="task"></app-create-task>
   </ng-template>
 </main>

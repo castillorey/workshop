@@ -19,8 +19,10 @@ type DropdownObject = {
 export class CreateTaskComponent implements OnInit {
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
   @Input() connectedOverlay: CdkConnectedOverlay;
+  @Input() task?: TaskSchema;
+  formText: string;
   
-  createTask: FormGroup;
+  taskForm: FormGroup;
   selectedPriority: string;
 
   priorities: DropdownObject[] = [
@@ -29,12 +31,18 @@ export class CreateTaskComponent implements OnInit {
     { value: 'low', viewValue: 'Bajo' },
   ];
   
-
   constructor(private fb: FormBuilder, private _ngZone: NgZone) { }
 
   ngOnInit(): void {
     this.setForm();
     this.selectedPriority = '';
+    if (this.task && this.task.id.length > 0) {
+      this.setValuesOnForm(this.task);
+      this.formText = 'Editar';
+      this.selectedPriority = this.task.priority;
+    } else {
+      this.formText = 'Crear';
+    }
   }
   
   triggerResize() {
@@ -45,7 +53,7 @@ export class CreateTaskComponent implements OnInit {
   }
 
   setForm(): void {
-    this.createTask = this.fb.group({
+    this.taskForm = this.fb.group({
       date: [new Date(), Validators.required],
       priority: ['urgent', Validators.required],
       description: ['', Validators.required],
@@ -53,12 +61,23 @@ export class CreateTaskComponent implements OnInit {
   }
 
   onFormAdd(form: TaskSchema): void {
-    if (this.createTask.valid) {
+    if (this.taskForm.valid)
       console.log('valid');
-    }
+    else
+      console.log('edited');
+    this.close();
+  }
+
+  setValuesOnForm(form: TaskSchema): void {
+    this.taskForm.setValue({
+      date: new Date(form.date),
+      priority: form.priority,
+      description: form.description 
+   });
   }
 
   close(): void {
     this.connectedOverlay.overlayRef.detach();
   }
+  
 }
