@@ -4,6 +4,8 @@ import { Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { take } from 'rxjs/internal/operators/take';
 import { TaskSchema } from 'src/app/core';
+import { TaskService } from 'src/app/core/services';
+import { generateUniqueId } from 'src/app/shared/utils';
 
 type DropdownObject = {
   value: string;
@@ -20,6 +22,8 @@ export class CreateTaskComponent implements OnInit {
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
   @Input() connectedOverlay: CdkConnectedOverlay;
   @Input() task?: TaskSchema;
+  @Input() listId?: string;
+
   formText: string;
   
   taskForm: FormGroup;
@@ -31,12 +35,15 @@ export class CreateTaskComponent implements OnInit {
     { value: 'low', viewValue: 'Bajo' },
   ];
   
-  constructor(private fb: FormBuilder, private _ngZone: NgZone) { }
+  constructor(
+    private fb: FormBuilder, 
+    private _ngZone: NgZone,
+    private tasksService: TaskService) { }
 
   ngOnInit(): void {
     this.setForm();
     this.selectedPriority = '';
-    if (this.task && this.task.id.length > 0) {
+    if (this.task?.id?.length > 0) {
       this.setValuesOnForm(this.task);
       this.formText = 'Editar';
       this.selectedPriority = this.task.priority;
@@ -61,10 +68,23 @@ export class CreateTaskComponent implements OnInit {
   }
 
   onFormAdd(form: TaskSchema): void {
-    if (this.taskForm.valid)
+    if (this.taskForm.valid && !this.task?.id){
+      form.id = generateUniqueId();
+      this.tasksService.addTask(form);
       console.log('valid');
-    else
+    } else if(this.task && this.listId) {
+      const findPriority = this.priorities.find(
+        (element) => form.priority === element.value
+      );
+      form.id = this.task.id;
+      form.priority = !findPriority ? this.task.priority : form.priority;
+      form.date = new Date(form.date);
+      
+      if (form.priority) {
+        this.tasksService.updateTask(form, this.listId);
+      }
       console.log('edited');
+    }
     this.close();
   }
 

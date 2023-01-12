@@ -9,6 +9,6 @@
   <ng-template #connectedOverlay="cdkConnectedOverlay" cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isOverlayDisplayed" [cdkConnectedOverlayHasBackdrop]="overlayOptions.hasBackdrop"
     [cdkConnectedOverlayPositions]="overlayOptions.positions" (backdropClick)="hideOverlay()" (detach)="hideOverlay()">
-    <app-create-task [connectedOverlay]="connectedOverlay" [task]="task"></app-create-task>
+    <app-create-task [connectedOverlay]="connectedOverlay" [task]="task" [listId]="listId"></app-create-task>
   </ng-template>
 </main>
